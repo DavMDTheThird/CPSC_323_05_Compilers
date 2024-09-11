@@ -10,12 +10,18 @@
 #include <vector>
 #include <string>
 
+
+// Class that contains methods for solving postfix expressions
+// Both numbers and operators, as well as letters from 'a' to 'd', are accepted entries.  
 class postFix{
+    // Vector where the 'stack' is implemented.
     std::vector<int> myVec;
     int answer = 0; 
     public: 
         postFix(std::string expression){
+            // Go through the expression
             for(int i = 0; i < expression.length(); ++i){
+                // If letters are provided, values taken from the handout
                 if(expression[i] == 'a'){
                     myVec.push_back(5);
                 }
@@ -29,11 +35,12 @@ class postFix{
                     myVec.push_back(4);
                 }
 
+                // If actual digits are given
                 else if(isdigit(expression[i])){
                     myVec.push_back(expression[i] - '0');
                     // std::cout << "num #" <<i <<": "<<expression[i]<< std::endl;
-                    // printVec(myVec);
                 }
+                // If operators, '$', or any other character are given.
                 else{
                     // std::cout << "exp #" <<i <<": "<<expression[i]<< std::endl;
                     if(expression[i] == '*'){
@@ -48,6 +55,8 @@ class postFix{
                         
                         myVec.push_back(num2 + num1);
                     }
+                    // This will not work propperly since myVec is a vector of integers, so if the division is not 
+                    // perfect, it will not give the right answer
                     else if(expression[i] == '/'){
                         int num1 = int(myVec.back());myVec.pop_back();
                         int num2 = int(myVec.back());myVec.pop_back();
@@ -70,10 +79,10 @@ class postFix{
                 }
                 
             }
-            // std::cout << myVec[0] << std::endl;
             printVec(myVec);
         }
-
+        
+        // Method that prints out the compleate stack thats left of the expression
         void printVec(std::vector<int> vec_){
             for(int n : myVec){
                 std::cout<<n<<" ";
