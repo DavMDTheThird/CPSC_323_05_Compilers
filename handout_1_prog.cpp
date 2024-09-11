@@ -8,25 +8,61 @@
 
 #include <iostream>
 #include <vector>
+#include <string>
 
-class stack{
-        std::vector<char> myVec;
-
-    public:
-        stack(std::string expression){
+class postFix{
+    std::vector<int> myVec;
+    int answer = 0; 
+    public: 
+        postFix(std::string expression){
             for(int i = 0; i < expression.length(); ++i){
-                myVec.push_back(expression[i]);
-                std::cout << expression[i] << std::endl;
-            }
+                if(isdigit(expression[i])){
+                    myVec.push_back(expression[i] - '0');
+                    std::cout << "num #" <<i <<": "<<expression[i]<< std::endl;
+                    // printVec(myVec);
+                }
+                else{
+                    std::cout << "exp #" <<i <<": "<<expression[i]<< std::endl;
+                    if(expression[i] == '*'){
+                        int num1 = int(myVec.back());myVec.pop_back();
+                        int num2 = int(myVec.back());myVec.pop_back();
 
+                        myVec.push_back(num1 * num2);
+                    }
+                    else if(expression[i] == '+'){
+                        int num1 = int(myVec.back());myVec.pop_back();
+                        int num2 = int(myVec.back());myVec.pop_back();
+                        
+                        myVec.push_back(num1 + num2);
+                    }
+                    else if(expression[i] == '/'){
+                        int num1 = int(myVec.back());myVec.pop_back();
+                        int num2 = int(myVec.back());myVec.pop_back();
+
+                        myVec.push_back(num1 / num2);
+                    }
+                    else if(expression[i] == '-'){
+                        int num1 = int(myVec.back());myVec.pop_back();
+                        int num2 = int(myVec.back());myVec.pop_back();
+
+                        myVec.push_back(num1 - num2);
+                    }
+                    else{
+                        std::cout<<"There was an error"<<std::endl;
+                        break;
+                    }
+                }
+                
+            }
+            // std::cout << myVec[0] << std::endl;
             printVec(myVec);
         }
-        
 
-        void printVec(std::vector<char> vec_){
-            for(int i = 0; i < myVec.size(); ++i){
-                std::cout<<myVec[i]<<", ";
+        void printVec(std::vector<int> vec_){
+            for(int n : myVec){
+                std::cout<<n<<" ";
             }
+                std::cout<<std::endl;
         }
 };
 
@@ -35,8 +71,7 @@ int main(){
     std::string myExpression;
     std::cin>>myExpression;
 
-    stack myStack(myExpression);
-
+    postFix myPostFix(myExpression);
 
     return 0;
 }
