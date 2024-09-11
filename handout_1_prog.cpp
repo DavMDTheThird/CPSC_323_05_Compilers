@@ -16,36 +16,52 @@ class postFix{
     public: 
         postFix(std::string expression){
             for(int i = 0; i < expression.length(); ++i){
-                if(isdigit(expression[i])){
+                if(expression[i] == 'a'){
+                    myVec.push_back(5);
+                }
+                else if(expression[i] == 'b'){
+                    myVec.push_back(7);
+                }
+                else if(expression[i] == 'c'){
+                    myVec.push_back(2);
+                }
+                else if(expression[i] == 'd'){
+                    myVec.push_back(4);
+                }
+
+                else if(isdigit(expression[i])){
                     myVec.push_back(expression[i] - '0');
-                    std::cout << "num #" <<i <<": "<<expression[i]<< std::endl;
+                    // std::cout << "num #" <<i <<": "<<expression[i]<< std::endl;
                     // printVec(myVec);
                 }
                 else{
-                    std::cout << "exp #" <<i <<": "<<expression[i]<< std::endl;
+                    // std::cout << "exp #" <<i <<": "<<expression[i]<< std::endl;
                     if(expression[i] == '*'){
                         int num1 = int(myVec.back());myVec.pop_back();
                         int num2 = int(myVec.back());myVec.pop_back();
 
-                        myVec.push_back(num1 * num2);
+                        myVec.push_back(num2 * num1);
                     }
                     else if(expression[i] == '+'){
                         int num1 = int(myVec.back());myVec.pop_back();
                         int num2 = int(myVec.back());myVec.pop_back();
                         
-                        myVec.push_back(num1 + num2);
+                        myVec.push_back(num2 + num1);
                     }
                     else if(expression[i] == '/'){
                         int num1 = int(myVec.back());myVec.pop_back();
                         int num2 = int(myVec.back());myVec.pop_back();
 
-                        myVec.push_back(num1 / num2);
+                        myVec.push_back(num2 / num1);
                     }
                     else if(expression[i] == '-'){
                         int num1 = int(myVec.back());myVec.pop_back();
                         int num2 = int(myVec.back());myVec.pop_back();
 
-                        myVec.push_back(num1 - num2);
+                        myVec.push_back(num2 - num1);
+                    }
+                    else if(expression[i] == '$'){
+                        break;
                     }
                     else{
                         std::cout<<"There was an error"<<std::endl;
@@ -67,11 +83,21 @@ class postFix{
 };
 
 int main(){ 
-    std::cout<< "Give me your expression:";
-    std::string myExpression;
-    std::cin>>myExpression;
+    bool continue_ = true;
+    while(continue_){
+        std::cout<< "Enter a postfix expression with $ at the end:";
+        std::string myExpression;
+        std::cin>>myExpression;
+        postFix myPostFix(myExpression);
 
-    postFix myPostFix(myExpression);
+
+        std::string answer;
+        std::cout<< "CONTINUE(y/n)?";
+        std::cin>>answer;
+        if(answer != "y")
+            continue_ = false;
+    }
+
 
     return 0;
 }
