@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------------------------------------- 
 //          Group names: David Medina Dominguez, Donovan Jabido and Jaiveer Nayen Kapadia 
-//          Assignment     : No.1 
-//          Due date       : 10/09/2024. 
+//          Assignment     : No.2 
+//          Due date       : 10/18/2024. 
 // Purpose: Write a program to find the value of a postfix expression. Variables are one or more characters. 
 //-------------------------------------------------------------------------------------------------------------
 
@@ -16,18 +16,21 @@ class postFix{
 
     public: 
         postFix(std::string expression){
-            for(int i = 0; i < expression.length(); ++i){
-                // myVec.push_back(expression[i]); 
+            // std::cout<<"Trying ("<<expression.length()<<"): "<<expression<<std::endl;
+            for(int i = 0; i < expression.length(); i){
                 std::string temp;
                 do{
-                    std::cout<<"A";
-                    temp = temp.append(std::string(&expression[i]));
+                    std::cout<<"now:"<<expression[i]<<std::endl;
+                    temp.push_back(expression[i]);
                     ++i;
-                } while (expression[i+1] =! ' ' ||  '$' || '\0');
+                } while ((expression[i] != ' ')&&(expression[i] != '$')&&(expression[i] != '\0'));
                 
-                myVecStr.push_back(temp);
-
-                if(expression[i+1] == '$' || '\0'){break;}
+                std::cout<<"temp: "<<temp<<std::endl;
+                std::cout<<"-----------------"<<std::endl;
+                // myVecStr.push_back(temp);
+                // printVecStr();
+                if(expression[i] == ' '){++i;}
+                if((expression[i]=='$')||expression[i]=='\0'){break;}
             }
         }
 
@@ -49,10 +52,11 @@ int main(int argc, char* argv[]){
 
     std::cout<< "Enter a postfix expression with $ at the end:";
     std::string myExpression;
-    std::cin>>myExpression;
+    std::getline(std::cin, myExpression);
+    std::cout<<"You said: "<<myExpression<<std::endl;
 
     postFix myPostFix(myExpression);
-    myPostFix.printVecStr();
+    // myPostFix.printVecStr();
 
     return 0;
 }
