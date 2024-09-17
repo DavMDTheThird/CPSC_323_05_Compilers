@@ -13,6 +13,7 @@ class postFix{
     // Vector where the 'stack' is implemented.
     private:
         std::vector<std::string> myVecStr;
+        std::vector<int> myVecInt;
         int answer = 0; 
 
     public: 
@@ -23,24 +24,56 @@ class postFix{
                     temp.push_back(expression[i]);
                     if(checkIfOperator(expression[i])){++i;break;} //If there is an operator at the start
                     ++i;
-                }while((expression[i] != ' ')&&(expression[i] != '$')&&(expression[i] != '\0')&&!checkIfOperator(expression[i])); //Stop when you find the end, blank space or operator [end of variable]
+                }while((expression[i]!=' ')&&(expression[i]!='$')&&(expression[i]!='\0')&&
+                !checkIfOperator(expression[i])); //Stop when you find the end, blank space or operator [end of variable]
 
                 myVecStr.push_back(temp);
                 
-                if(expression[i] == ' '){++i;} // Skip/ignore blank spaces
+                if(expression[i]==' '){++i;} // Skip/ignore blank spaces
                 if((expression[i]=='$')||expression[i]=='\0'){break;} // End of string
             }
-            // printVecStr();
-            // setValValues();
-            // printVecStr();
+            setValValues();
+            solvePostFix();
         }
 
         void solvePostFix(){
+            for(std::string element : myVecStr){
+                if(std::isdigit(element[0])){
+                    myVecInt.push_back(std::stoi(element));
+                }
+                else{
+                    if(element[0] == '+'){
+                        int num1 = myVecInt.back();myVecInt.pop_back();
+                        int num2 = myVecInt.back();myVecInt.pop_back();
 
-        }
+                        myVecInt.push_back(num2 + num1);
+                    }
+                    else if(element[0] == '-'){
+                        int num1 = myVecInt.back();myVecInt.pop_back();
+                        int num2 = myVecInt.back();myVecInt.pop_back();
 
-        int getAnswer(){
-            return answer;
+                        myVecInt.push_back(num2 - num1);
+                    }
+                    else if(element[0] == '*'){
+                        int num1 = myVecInt.back();myVecInt.pop_back();
+                        int num2 = myVecInt.back();myVecInt.pop_back();
+
+                        myVecInt.push_back(num2 * num1);
+                    }
+                    else if(element[0] == '/'){
+                        int num1 = myVecInt.back();myVecInt.pop_back();
+                        int num2 = myVecInt.back();myVecInt.pop_back();
+
+                        myVecInt.push_back(num2 / num1);
+                    }
+                }
+
+            }
+            if(myVecInt.size() != 1){
+                std::cout<<"There are still elements in the stack, operation incomplete!"<<std::endl;
+            }
+            answer = myVecInt[0];
+            std::cout<<"Expression's value is: "<<answer<<std::endl;
         }
 
         //Check if a character is an operator
