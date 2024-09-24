@@ -7,137 +7,64 @@
 //-------------------------------------------------------------------------------------------------------------
 
 #include <iostream>
-#include <vector>
+#include <iomanip>
 #include <fstream>
 #include <string>
-#include <algorithm> // Use for the find() to look if a word is within a vector
-#include <iomanip> // Print columns in the terminal
 
-class Token{
-    private:
-    std::string token;
-    // The state has 5 states:
-    // S = 0, number = 1, character = 2, unaccepted = 3, END = 4
-    int state = 0;
-    // Which type of token it is:
-    // number = 1, identifier = 2, reserved word  = 3
-    int type = 0;
+const std::string RESERVED[] = {"while", "for", "switch", "do", "return"};
 
-    public:
-    Token(std::string input){
-        token = input;
-    }
-    int getState(){return state;}
-    int getType(){return type;}
-    std::string getToken(){return token;}
-    void setState(int num){state = num;}
-    void setType(int num){type = num;}
-};
-
-class Automata{
-    private:
-    std::vector<Token> myTokens;
-    std::vector<std::string> reservedWords = {"while", "for", "switch", "do", "return"};
-
-    bool checkState(Token &token, char tokenCh){
-            // std::cout<<"Token: " << token.getToken() << ", on ch: "<<tokenCh<<", has state: " << token.getState()<< std::endl;
-
-        switch (token.getState()){
-        case 0:
-            if(std::isdigit(tokenCh)){
-                token.setState(1);
-                return true;
-            }
-            else if(std::isalpha(tokenCh) || tokenCh == '_'){
-                token.setState(2);
-                return true;
-            }
-            else
-                token.setState(3);
-            break;
-        
-        case 1:
-            if(std::isdigit(tokenCh)){
-                token.setState(1);
-                return true;
-            }
-            else if(tokenCh == '\0'){
-                token.setType(1);
-                token.setState(4);
-            }
-            else{
-                token.setState(3);
-            }
-            break;
-
-        case 2:
-            if(std::isalpha(tokenCh) || tokenCh == '_'){
-                token.setState(2);
-                return true;
-            }
-            else if(std::isdigit(tokenCh)){
-                token.setState(2);
-                return true;
-            }
-            else if(tokenCh == '\0'){
-                if(std::find(reservedWords.begin(), reservedWords.end(), token.getToken()) != reservedWords.end())
-                    token.setType(3);
-                else
-                    token.setType(2);
-                token.setState(4);
-            }
-            else
-                token.setState(3);
-            break;
-        
-        default:
-            break;
+bool is_number(std::string token) {
+    // if (token.empty()) {
+    //     return false;
+    // }
+    for (int i = 0; i < token.length(); i++) {
+        if (!isdigit(token[i])) {
+            return false;
         }
+    }
+    return true;
+}
+
+bool is_identifier(std::string token) {
+    if (token.empty() || !(token[0] == '_' || isalpha(token[0]))) {
         return false;
     }
-
-    void checkToken(std::string token){
-        Token newToken(token);
-        for(int i = 0; i <= token.size(); ++i){
-            if(checkState(newToken, token[i])){
-                
-            }
-            else{break;}
-        }
-        myTokens.push_back(newToken);
-    }
-
-    public:
-    Automata(char* fileName){
-        std::ifstream file(fileName);
-        // Check if the txt file, named "tokens", is on the directory
-        if (!file.is_open()) 
-            std::cerr << "Unable to open file" << std::endl;
-
-        std::string line;
-        while (std::getline(file, line)){
-            checkToken(line);
-        }
-        printTokens();
-        file.close();
-    }
-
-    void printTokens(){
-        std::cout << std::left << std::setw(13) << "Token"
-                               << std::setw(13) << "Number"
-                               << std::setw(13) << "identifier"
-                               << std::setw(13) << "Reserved Word" << std::endl;
-
-        for(Token token : myTokens){
-            std::cout << std::left << std::setw(13) << token.getToken()
-                                << std::setw(13) << (token.getType() == 1 ? "yes":"no")
-                                << std::setw(13) << (token.getType() == 2 ? "yes":"no")
-                                << std::setw(13) << (token.getType() == 3 ? "yes":"no") << std::endl;
+    for (int i = 1; i < token.length(); i++) {
+        if (!(token[i] == '_' || isalpha(token[i]) || isdigit(token[i]))) {
+            return false;
         }
     }
-};
+    return true;
+}
+
+bool is_reserved(std::string token) {
+    for (std::string word : RESERVED) {
+        if (token == word) {
+            return true;
+        }
+    }
+    return false;
+}
+
 
 int main(int argc, char* argv[]){
-    Automata myAutomata(argv[1]);
+    std::ifstream inputFile("tokens.txt");
+
+    if (!inputFile.is_open()) {
+        std::cerr << "Error opening file\n";
+        return 1;
+    }
+
+    std::string token;
+    std::cout << "Token            number         identifier     reserved word\n";
+    while (getline(inputFile, token)) {
+        std::string is_num = is_number(token) ? "yes" : "no ";
+        std::string is_id = is_identifier(token) ? "yes" : "no ";
+        std::string is_res = is_reserved(token) ? "yes" : "no ";
+        std::cout << token << std::setw(20 - token.length()) << is_num << "            " << is_id << "            " << is_res << '\n';
+    }
+    
+    inputFile.close();
+
     return 0;
 }
