@@ -15,6 +15,8 @@ class Automata{
     // S = 0, B = 1, C = 2, END = 3
     int state = 0;
   
+    // This function is the FA, checks and changes the state regarding the next element of an input.
+    // If there is something that is not accpeted, it returns false.
     bool checkAutomata(char next){
         switch(state){
             case 0:
@@ -28,6 +30,7 @@ class Automata{
                     state = 2;
                     return true;
                 }
+                break;
 
             case 1:
                 if(next == 'b')
@@ -40,6 +43,7 @@ class Automata{
                     state = 3;
                     return true;
                 }
+                break;
 
             case 2:
                 if(next == 'a'){
@@ -49,15 +53,17 @@ class Automata{
                 else if (next == '$' || next == '\0'){
                     state = 3;
                     return true;
-                }                    
+                }
+                break;                 
 
             default:
-                return false;
+                break;
         }
         return false;
     }
     
     public:
+    // Constructor that tells you if the input is accepted or not by the FA.
     Automata(std::string input){
         for(int i = 0; i < input.length();++i){
             if(checkAutomata(input[i])){
@@ -72,16 +78,11 @@ class Automata{
             }
         }
     }
-
-
 };
-
-
 
 int main(int argc, char* argv[]){
     for(int i = 1; i < argc; ++i){
         Automata myAutomata(argv[i]);
-    }
-    
+    }    
     return 0;
 }
