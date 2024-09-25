@@ -39,8 +39,12 @@ class Automata{
     std::vector<Token> myTokens;
     std::vector<std::string> reservedWords = {"while", "for", "switch", "do", "return"};
 
+    // This functions does all the automata functionalities, it checks the current state of the 
+    // identification and changes between states regarding the FA.
+    // If somethig a char ins't accepted or the string has ended, it will return false.
     bool checkState(Token &token, char tokenCh){
-            // std::cout<<"Token: " << token.getToken() << ", on ch: "<<tokenCh<<", has state: " << token.getState()<< std::endl;
+            // std::cout<<"Token: " << token.getToken() << ", on ch: "<<tokenCh<<", has state: " 
+            // << token.getState()<< std::endl;
 
         switch (token.getState()){
         case 0:
@@ -80,7 +84,8 @@ class Automata{
                 return true;
             }
             else if(tokenCh == '\0'){
-                if(std::find(reservedWords.begin(), reservedWords.end(), token.getToken()) != reservedWords.end())
+                if(std::find(reservedWords.begin(), reservedWords.end(),
+                             token.getToken()) != reservedWords.end())
                     token.setType(3);
                 else
                     token.setType(2);
@@ -96,11 +101,12 @@ class Automata{
         return false;
     }
 
+    // Function that checks the entire length of the token and pushes it to the vector of tokens
     void checkToken(std::string token){
         Token newToken(token);
         for(int i = 0; i <= token.size(); ++i){
             if(checkState(newToken, token[i])){
-                
+                // std::cout<<token[i]<<std::endl;
             }
             else{break;}
         }
@@ -110,18 +116,20 @@ class Automata{
     public:
     Automata(char* fileName){
         std::ifstream file(fileName);
-        // Check if the txt file, named "tokens", is on the directory
-        if (!file.is_open()) 
+        // Check if the txt file is open
+        if(!file.is_open())
             std::cerr << "Unable to open file" << std::endl;
-
-        std::string line;
-        while (std::getline(file, line)){
-            checkToken(line);
+        else{
+            std::string line;
+            while (std::getline(file, line)){
+                checkToken(line);
+            }
+            printTokens();
+            file.close();
         }
-        printTokens();
-        file.close();
     }
 
+    // Function that prints out all the tokens and their respective type
     void printTokens(){
         std::cout << std::left << std::setw(13) << "Token"
                                << std::setw(13) << "Number"
@@ -129,10 +137,11 @@ class Automata{
                                << std::setw(13) << "Reserved Word" << std::endl;
 
         for(Token token : myTokens){
-            std::cout << std::left << std::setw(13) << token.getToken()
-                                << std::setw(13) << (token.getType() == 1 ? "yes":"no")
-                                << std::setw(13) << (token.getType() == 2 ? "yes":"no")
-                                << std::setw(13) << (token.getType() == 3 ? "yes":"no") << std::endl;
+            std::cout<<std::left<<std::setw(13) << token.getToken()
+                                <<std::setw(13) << (token.getType() == 1?"yes":"no")
+                                <<std::setw(13) << (token.getType() == 2?"yes":"no")
+                                <<std::setw(13) << (token.getType() == 3?"yes":"no")
+                                <<std::endl;
         }
     }
 };
