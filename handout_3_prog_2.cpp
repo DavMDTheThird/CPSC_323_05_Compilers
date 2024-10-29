@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------------------------------------- 
 //          Group names: David Medina Dominguez, Donovan Jabido and Jaiveer Nayen Kapadia 
 //          Assignment     : No.3 
-//          Due date       : 10/25/2024. 
+//          Due date       : 09/25/2024. 
 // Purpose: Write a program to determine whether an input string is accepted or rejected by the grammar. 
 //          Hint, first you have to complete the FA. 
 //-------------------------------------------------------------------------------------------------------------
