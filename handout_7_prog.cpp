@@ -4,13 +4,15 @@
 //          Due date       : 10/30/2024. 
 // Purpose: Given the following CFG and the Predictive Parsing table. Write a program to determine which of the
 //     following are accepted/rejected by the given grammar (1) (i+i)*i$, (2) i*(i-i)$, (3) i(i+i)$. Show the 
-//     content of the stack after each match.
+//     content of the stack after each match. 2. Include the  S->aW , W->=E  rules to the beginning of the 
+//     grammar, replace F->i  with F->a and F->b. Trace input (i) a=(a+b)*a$, (ii) a=a*(b-a)$, (iii) a=(a+a)b$
 //-------------------------------------------------------------------------------------------------------------
 
 #include <iostream>
 #include <string>
 #include <functional>
 
+// Some definitions to test the program
 #define ex1Rows {"E", "Q", "T", "R", "F"}
 #define ex1Cols {"i", "+", "-", "*", "/", "(", ")", "$"}
 #define ex1_test1 "(i+i)*i$"
@@ -24,6 +26,8 @@
 #define ex2_test3 "a=(a+a)b$"
 
 
+// Parsing tables for exercises 2 & 3
+// Lambda denoted by the "_" character
 std::vector<std::vector<std::string>> tableEx2 = {
         {"TQ", "", "", "", "", "TQ", "", ""},
         {"", "+TQ", "-TQ", "", "", "", "_", "_"},
@@ -31,7 +35,6 @@ std::vector<std::vector<std::string>> tableEx2 = {
         {"", "_", "_", "*FR", "/FR", "", "_", "_"},
         {"i", "", "", "", "", "(E)", "", ""}
 };
-
 std::vector<std::vector<std::string>> tableEx3 = {
     {"aW", "", "", "", "", "", "", "", "", ""},
     {"", "", "", "", "", "", "", "", "=E", ""},
@@ -42,14 +45,17 @@ std::vector<std::vector<std::string>> tableEx3 = {
     {"a", "b", "", "", "", "", "(E)", "", "", ""}
 };
 
-
-
-
+// Node Object Class for the stack
 struct Node{
     std::string element;
     Node* previous;
 };
 
+// Stack Object Class
+// Pointer to the top of the Stack, last element denoted by pointing to a nullpointer
+// The Stack asks for the rows and columns of the parsing table, so each state and terminal characters
+// a thing to note is that the first element of the rows MUST be the inicial/starting state.
+// Finally, it also requires the parsing table for which it will process the input.
 class Stack{
 private:
     Node* top;
@@ -59,16 +65,19 @@ private:
     std::vector<std::vector<std::string>> parsingTable;
 
 public:
-    // Constructor 
-    Stack(std::vector<std::string> rows, std::vector<std::string> cols, std::vector<std::vector<std::string>> table, std::string input) 
+    // Constructor, which will also do the trace of the input.
+    Stack(std::vector<std::string> rows, std::vector<std::string> cols, 
+            std::vector<std::vector<std::string>> table, std::string input) 
         : top(nullptr), tableRows(rows), tableCols(cols), parsingTable(table), input(input){
         this->trace();
     }
 
+    // Just returns the initial/starting state for the trace to work
     std::string getStartState(){
         return this->tableRows[0];
     }
 
+    // Push a new node to the Stack
     void push(std::string c){
         Node* newNode = new Node();
         newNode->element = c; 
@@ -76,6 +85,8 @@ public:
         top = newNode;
     }
 
+    // Pops the top node of the stack, returns its value
+    // Error handling should be introduced if return "!"
     std::string pop(){
         if(top == nullptr)
             return "!"; 
@@ -86,10 +97,12 @@ public:
         return element_; // Return the popped data
     }
 
-    int getCol(std::string c){
+    // Given a string s, find it in the given column
+    // Error handling should be added if return -1 
+    int getCol(std::string s){
         int i = 0;
         for(std::string col : this->tableCols){
-            if(c == col){
+            if(s == col){
                 return i;
             }
             ++i;
@@ -97,10 +110,12 @@ public:
         return -1;
     }
 
-    int getRow(std::string c){
+    // Given a string s, find it in the given column
+    // Error handling should be added if return -1 
+    int getRow(std::string s){
         int i = 0;
         for(std::string row : this->tableRows){
-            if(c == row){
+            if(s == row){
                 return i;
             }
             ++i;
@@ -108,7 +123,10 @@ public:
         return -1;
     }
 
+    // A function that prints the current Stack
     void printStack(){
+        // Definition of a recursive function to print the elements in correct order 
+        //      (left to right) -> (bottom of Stack to top of the Stack)
         std::function<void(Node*)> print_element = [&print_element](Node* element){
             if(element->previous == nullptr)
                 std::cout<<element->element;
@@ -122,6 +140,7 @@ public:
         std::cout<<std::endl;
     }
 
+    // Main function to trace an input through the given rules and states (parsing table)
     int trace(){
         this->push("$");
         this->push(getStartState());
@@ -130,16 +149,23 @@ public:
             std::string pop = this->pop();
             std::string read; read += this->input[i];
             // std::cout<<"  Read: "<<read<<std::endl;
+            // This line could break if a given character is not on the list, further error handling could be added
             std::string tableElement = this->parsingTable[this->getRow(pop)][this->getCol(read)];
             while(pop != read){
                 // std::cout<<"table["<<pop<<"]"<<"["<<read<<"]: "<<tableElement<<std::endl;
+
+                // If the parsing tree points to a empty state, input is rejected
                 if(tableElement == ""){
                     std::cout<<"The input: "<<this->input<<" is rejected"<<std::endl;
                     return -1;
                 }
+                // If lambda ("_"), skip to the next state
                 if(tableElement != "_"){
+                    // Pushes the states (backwards) to the Stack
                     for(int i = tableElement.length() - 1; i >= 0; --i){
                         std::string temp;
+                        // If the given state is in E' form (two characters, instead of one)
+                        // This only work with one ', further increase could be added 
                         if('\'' == tableElement[i]){
                             temp += tableElement[i-1];
                             temp += tableElement[i];
@@ -151,7 +177,7 @@ public:
                         this->push(temp);
                     }
                 }
-
+                // Advance to the next state until a match is found or input is rejected
                 // printStack();
                 tableElement = this->parsingTable[this->getRow(pop)][this->getCol(read)];
                 pop = this->pop();
