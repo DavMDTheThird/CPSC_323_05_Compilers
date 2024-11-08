@@ -104,8 +104,10 @@ public:
         return -1;
     }
 
+    // Returns a Vector of strings containing the left hand-side of the rule, 
+    // and the total elements of the right hand-side.
     std::vector<std::string> getRule_Pop(int num){
-        std::string rule = "";
+        std::string ruleLHS = "";
         int i = 0;
         bool right = false;
         for(char e : CFG[num-1]){
@@ -114,9 +116,9 @@ public:
             else if(e == '>')
                 right = true;
             else
-                rule += e;
+                ruleLHS += e;
         }
-        return {rule, std::to_string(i)};
+        return {ruleLHS, std::to_string(i)};
     }
 
     // A function that prints the current Stack
@@ -136,9 +138,11 @@ public:
         std::cout<<std::endl;
     }
 
-    std::vector<std::string> SorN2num(std::string element){
-        std::string state;
-        std::string element_;
+    // This function returns the given element into its two diferent parts from the Parsing table,
+    // either it's a Rule or State, and the value, or just the terminal value.  
+    std::vector<std::string> getRule_Elem(std::string element){
+        std::string state = "";
+        std::string element_ = "";
         for(char e : element){
             if(e == 'S' || e == 'R'){
                 state += e;
@@ -150,7 +154,7 @@ public:
         return {state, element_};
     }
 
-    // Main function to trace an input through the given rules and states (parsing table)
+    // Main function to trace an input through the given rules and states (LR parsing table)
     int trace(){
         std::string read;
         std::string tableElement;
@@ -162,6 +166,10 @@ public:
             printStack();
             std::string pop = this->pop();
             if(read_){
+                if(this->input[i] == '\n'){
+                    std::cout<<this->input<<" is NOT ACCEPTED"<<std::endl;
+                    return 0;
+                }
                 read = this->input[i];
                 ++i;
                 read_ = false;
@@ -177,7 +185,7 @@ public:
                 std::cout<<this->input<<" is NOT ACCEPTED"<<std::endl;
                 return 0;
             }
-            std::vector<std::string> TableElements = SorN2num(tableElement);
+            std::vector<std::string> TableElements = getRule_Elem(tableElement);
             if (TableElements[0] == "S"){
                 this->push((pop)); this->push(read); this->push(TableElements[1]);
                 read_ = true;
