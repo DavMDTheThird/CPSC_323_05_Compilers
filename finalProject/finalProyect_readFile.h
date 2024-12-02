@@ -1,28 +1,25 @@
 #include <iostream>
 #include <fstream>  // Include file stream library
 
-#ifndef FINALPROJECT_READFILE_H
-#define FINALPROJECT_READFILE_H
+#ifndef P1_READFILE_H
+#define P1_READFILE_H
 
-class ReadFile{
+class P1_readFile{
 private:
-    std::string fileName;
 
 public:
-    std::string getFileName(){return this->fileName;}
-
-    ReadFile(std::string fileName_ = "final.txt"){
-        this->fileName = "";
+    P1_readFile(std::string fileName = "final.txt"){
+        std::string fileTitle;
         int i = 0;
-        while(fileName_[i] != '.'){
-            this->fileName += fileName_[i];
+        while(fileName[i] != '.'){
+            fileTitle += fileName[i];
             ++i;
         }
-        this->fileName += "24.txt";
+        fileTitle += "f24.txt";
 
-        std::ofstream fileOut(this->fileName);
+        std::ofstream fileOut(fileTitle);
         
-        std::ifstream fileIn(fileName_);
+        std::ifstream fileIn(fileName);
         if (!fileIn){std::cout << "Unable to open file\n";}
         if (!fileOut){std::cout << "Unable to create file\n";}
 
@@ -39,10 +36,7 @@ public:
                 fileOut << " ";
                 // std::cout << word << " ";
                 if(word[word.length()-1] == ';'){
-                    fileOut << "\n";
-                }
-                else if(word == "var" || word == "begin" || word == "end"){
-                    fileOut << "\n";
+                fileOut << "\n";
                 }
             }
             else{

@@ -1,10 +1,8 @@
 #include <iostream>
-#include "finalProject_readFile.h"
-#include "finalProject_translation.h"
+#include "finalProyect_readFile.h"
 
 int main(int argc, char* argv[]){
-    ReadFile myP1_rf;
-    TranslateFile myP1_t(myP1_rf.getFileName());
+    P1_readFile myP1;
 
     return 0;
 }
