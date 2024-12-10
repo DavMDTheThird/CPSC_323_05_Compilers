@@ -27,21 +27,20 @@
 
 
 // Parsing tables for exercises 2 & 3
-// Lambda denoted by the "_" character
 std::vector<std::vector<std::string>> tableEx2 = {
         {"TQ", "", "", "", "", "TQ", "", ""},
-        {"", "+TQ", "-TQ", "", "", "", "_", "_"},
+        {"", "+TQ", "-TQ", "", "", "", "λ", "λ"},
         {"FR", "", "", "", "", "FR", "", ""},
-        {"", "_", "_", "*FR", "/FR", "", "_", "_"},
+        {"", "λ", "λ", "*FR", "/FR", "", "λ", "λ"},
         {"i", "", "", "", "", "(E)", "", ""}
 };
 std::vector<std::vector<std::string>> tableEx3 = {
     {"aW", "", "", "", "", "", "", "", "", ""},
     {"", "", "", "", "", "", "", "", "=E", ""},
     {"TE'", "TE'", "", "", "", "", "TE'", "", "", ""},
-    {"", "", "+TE'", "-TE'", "", "", "", "_", "", "_"},
+    {"", "", "+TE'", "-TE'", "", "", "", "λ", "", "λ"},
     {"FT'", "FT'", "", "", "", "", "FT'", "", "", ""},
-    {"", "", "_", "_", "*FT'", "/FT'", "", "_", "", "_"},
+    {"", "", "λ", "λ", "*FT'", "/FT'", "", "λ", "", "λ"},
     {"a", "b", "", "", "", "", "(E)", "", "", ""}
 };
 
@@ -159,13 +158,13 @@ public:
                     std::cout<<"The input: "<<this->input<<" is rejected"<<std::endl;
                     return -1;
                 }
-                // If lambda ("_"), skip to the next state
-                if(tableElement != "_"){
+                // If lambda ("λ"), skip to the next state
+                if(tableElement != "λ"){
                     // Pushes the states (backwards) to the Stack
                     for(int i = tableElement.length() - 1; i >= 0; --i){
                         std::string temp;
                         // If the given state is in E' form (two characters, instead of one)
-                        // This only work with one ', further increase could be added 
+                        // This only work with one ', further increase could be implemented 
                         if('\'' == tableElement[i]){
                             temp += tableElement[i-1];
                             temp += tableElement[i];
