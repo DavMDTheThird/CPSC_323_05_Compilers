@@ -6,6 +6,6 @@ a = 3 ;
 b2a = 14 ; 
 c = 5 ; 
 print ( c ) ; 
-bba = a * ( ba2a + 2 * c ) ; 
+bba = a * ( bba + 2 * c ) ; 
 print ( "value=" , bba ) ; 
 end 
