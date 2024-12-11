@@ -18,6 +18,7 @@ public:
             this->fileName += fileName_[i];
             ++i;
         }
+        // Set up the name of the txt file
         this->fileName += "24.txt";
 
         std::ofstream fileOut(this->fileName);
@@ -35,6 +36,7 @@ public:
                 }
             }
             if(!comment){
+                // Write the txt file with spaces in between tokens
                 fileOut << word;
                 fileOut << " ";
                 // std::cout << word << " ";
@@ -46,6 +48,7 @@ public:
                 }
             }
             else{
+                // If the end of a comment is detected, start pushing words once again to the txt file
                 if(word[word.length()-1] == ')'){
                     if(word[word.length()-2] == '*'){
                         comment = false;
